@@ -6,38 +6,33 @@ import os
 from configuration.configuration import Configuration
 from utility.parse_arguments import ParseArgs
 from model.model_enum import ModelE
-from task.inference_GCN import InferenceGCN
-from task.inference_GAT import InferenceGAT
-from task.inference_Graphomer import InferenceGraphomer
 
 CPU = "cpu"
 GPU = "gpu"
 
 def get_model_type(type_str:str):
-    if type_str == "gcn":
-        return ModelE.GCN
-    elif type_str == "gat":
-        return ModelE.GAT
-    elif type_str == "graphomer":
-        return ModelE.GRAPHOMER
+    if type_str == "dummy":
+        return ModelE.DUMMY_MODEL
     else:
         return None
 
 def get_task(type_str:str, model_type:ModelE, configruation:Configuration=None):
     if type_str.lower() == "train":
-        if model_type == ModelE.GCN:
-            return TrainGCN(configuration=configruation)
-        elif model_type == ModelE.GAT:
-            return TrainGAT(configuration=configruation)
-        elif model_type == ModelE.GRAPHOMER:
-            return TrainGraphModel(configruation=configruation)
+        pass
+        # if model_type == ModelE.GCN:
+        #     return TrainGCN(configuration=configruation)
+        # elif model_type == ModelE.GAT:
+        #     return TrainGAT(configuration=configruation)
+        # elif model_type == ModelE.GRAPHOMER:
+        #     return TrainGraphModel(configruation=configruation)
     else:
-        if model_type == ModelE.GCN:
-            return InferenceGCN(configuration=configruation)
-        elif model_type == ModelE.GAT:
-            return InferenceGAT(configuration=configruation)
-        elif model_type == ModelE.GRAPHOMER:
-            return InferenceGraphomer(configuration=configruation)
+        pass
+        # if model_type == ModelE.GCN:
+        #     return InferenceGCN(configuration=configruation)
+        # elif model_type == ModelE.GAT:
+        #     return InferenceGAT(configuration=configruation)
+        # elif model_type == ModelE.GRAPHOMER:
+        #     return InferenceGraphomer(configuration=configruation)
     return None
 
 
