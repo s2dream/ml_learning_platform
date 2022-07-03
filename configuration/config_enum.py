@@ -14,4 +14,3 @@ class ConfigKey(Enum):
     DATA_TEST_PATH = auto()
     DATA_ENTITY_SIZE = auto()
     DATA_RELATION_SIZE = auto()
-

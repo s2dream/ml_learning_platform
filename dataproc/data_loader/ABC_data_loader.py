@@ -34,8 +34,6 @@ class PickleDataset(Dataset):
         data = pkl.load(self.bin_data_file)
         return data
 
-
-
 def get_dataloader(dataset, batch_size, shuffle=True):
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
     return dataloader
