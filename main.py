@@ -8,7 +8,7 @@ from utility.parse_arguments import ParseArgs
 from model.model_enum import ModelE
 
 CPU = "cpu"
-GPU = "gpu"
+GPU = "cuda"
 
 def get_model_type(type_str:str):
     if type_str == "dummy":
@@ -97,9 +97,9 @@ class Main:
                          join=True)
                 return
             else:
-                device_name = "gpu"
+                device_name = GPU
         else:
-            device_name = "cpu"
+            device_name = CPU
         self.launch_single(torch.device(device_name))
 
 
