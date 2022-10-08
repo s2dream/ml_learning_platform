@@ -58,7 +58,7 @@ class Main:
         self.num_of_devices = 1
         self.device_type = GPU
 
-    def setup(self, rank, world_size):
+    def setup_dist_environ(self, rank, world_size):
         os.environ['MASTER_ADDR'] = '127.0.0.1'
         os.environ['MASTER_PORT'] = '50012'
         dist.init_process_group("nccl", rank=rank, world_size=world_size)
@@ -71,7 +71,7 @@ class Main:
         self.device_type = CPU
 
     def launch_dist(self, rank, world_size):
-        self.setup(rank, world_size)
+        self.setup_dist_environ(rank, world_size)
         model_type = get_model_type(self.model_name)
         task = get_task(self.task_mode, model_type, None)
         task.setup_model(device=rank, dist=True)
@@ -104,6 +104,5 @@ class Main:
 
 
 if __name__ == '__main__':
-    # print("-")
     main = Main()
     main.launch()
