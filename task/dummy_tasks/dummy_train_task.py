@@ -95,7 +95,7 @@ class DummyTrainTask(TrainTask):
                                                                                                    acc,
                                                                                                    cur_lr,
                                                                                                    elapsed_time))
-
+            
     def compute_loss(self, logit, label):
         return self.cross_entropy_loss_fn(logit, label.to(torch.long))
 

@@ -1,5 +1,6 @@
 from task.ABC_task import ABCTask
 from abc import *
+import torch
 
 
 class TrainTask(ABCTask):
@@ -52,3 +53,34 @@ class TrainTask(ABCTask):
 
     def start_task(self):
         self.start_train()
+
+
+    def save_total_ckpt(self, model, opt, cur_epoch, cur_iter, save_path):
+        params = dict()
+        params["model"] = model.state_dict()
+        params["optimizer"] = opt.state_dict()
+        params["epoch"] = cur_epoch
+        params["iteration"] = cur_iter
+        torch.save(params, save_path)
+
+    def load_total_ckpt(self, model, opt, load_path):
+        params = torch.load(load_path)
+        model.load_state_dict(params["model"])
+        opt.load_state_dict(params["optimizer"])
+        epoch = params["epoch"]
+        iteration = params
+        return epoch, iteration
+
+    def save_model_ckpt(self, model, save_path):
+        torch.save(model.state_dict(), save_path)
+
+    def save_optimizer_ckpt(self, opt, save_path):
+        torch.save(opt.state_dict(), save_path)
+
+    def load_model_ckpt(self, model, load_path):
+        loaded_params = torch.load(load_path)
+        model.load_state_dict(loaded_params)
+
+    def load_optimizer_ckpt(self, opt, load_path):
+        loaded_params = torch.load(load_path)
+        opt.load_state_dict(loaded_params)
