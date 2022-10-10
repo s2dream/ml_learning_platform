@@ -25,13 +25,10 @@ def get_task(type_str:str, model_name:ModelE, configruation:Configuration=None):
     if type_str.lower() == "train":
         if model_name == "dummy":
             return DummyTrainTask()
-
-
     else:
-        pass
-
+        if model_name == "dummy":
+            return DummyInferenceTask()
     return None
-
 
 class Main:
     def __init__(self):

@@ -4,6 +4,8 @@ from dataproc.data_loader.dummy.dummy_data_loader import get_dataloader
 from model.dummy_model import DummyModel
 import torch
 import time
+from torch.optim.lr_scheduler import OneCycleLR
+
 
 
 class DummyTrainTask(TrainTask):
@@ -11,14 +13,15 @@ class DummyTrainTask(TrainTask):
     def __init__(self, config=None):
         config = Configuration()
         super().__init__(config)
+        self.cross_entropy_loss_fn = torch.nn.CrossEntropyLoss()
 
     def get_num_epochs(self):
-        print("get_num_epochs")
+        # print("get_num_epochs")
         num_epoch = self.config.get_val("num_epoch")
         return num_epoch
 
     def get_num_iterations(self):
-        print("get_num_iterations")
+        # print("get_num_iterations")
         return len(self.dataset_loader)
 
     def job_before_epochs_loops(self, params_dict):
@@ -30,7 +33,7 @@ class DummyTrainTask(TrainTask):
         :param params_dict:
         :return:
         '''
-        print("job_before_epochs")
+        # print("job_before_epochs")
         batch_size = self.config.get_val("batch_size")
         self.dataset_loader = get_dataloader(batch_size=batch_size)
         self.model = DummyModel()
@@ -48,16 +51,23 @@ class DummyTrainTask(TrainTask):
                                            eps=epsilon,
                                            weight_decay=weight_decay)
 
+        num_epoch = self.get_num_epochs()
+        num_iter_for_each_epoch = self.get_num_iterations()
+        self.lr_scheduler = torch.optim.lr_scheduler.OneCycleLR(self.optimizer, learning_rate,
+                                                             pct_start = 0.3,
+                                                             steps_per_epoch=num_iter_for_each_epoch, epochs=num_epoch, anneal_strategy='cos')
+
     def job_after_epochs_loops(self, params_dict):
-        print("job_after_epochs")
+        # print("job_after_epochs")
+        pass
 
     def job_before_iterations(self, params_dict):
-        print("job_before_iterations")
+        # print("job_before_iterations")
         self.iter_dataloader = iter(self.dataset_loader)
 
-    def job_for_each_iteration(self, params_dict, cur_iter, cur_epoch):
+    def job_for_each_iteration(self, params_dict, cur_iter_in_an_epoch, cur_epoch):
         start_time = time.time()
-        print("job_for_each_iteration:{0}".format(cur_iter))
+        # print("job_for_each_iteration:{0}".format(cur_iter))
         data = next(self.iter_dataloader)
         idx = data["idx"]
         input = data["input"]
@@ -69,24 +79,33 @@ class DummyTrainTask(TrainTask):
         self.optimizer.zero_grad()
         loss.backward()
         self.optimizer.step()
+        self.lr_scheduler.step()
 
         # total_iter = self.get_num_iterations()
-        if cur_iter>0 and cur_iter % 1000 == 0:
+        if cur_iter_in_an_epoch>0 and cur_iter_in_an_epoch % 100 == 0:
             total_iter = self.get_num_iterations()
-            acc = self.compute_acc
+            acc = self.compute_acc(logit, label)
             elapsed_time = time.time() - start_time
-            print("[epoch:{0},iter:{1}/{2}] loss:{3}, accuracy:{4}, elapsed_time(iter):{5}".format(cur_epoch,
-                                                                                                   cur_iter,
+            cur_lr = self.lr_scheduler.get_lr()
+            cur_lr = cur_lr[0]
+            print("[epoch:{0},iter:{1}/{2}] loss:{3}, accuracy:{4}, lr:{5}, elapsed_time(iter):{6}".format(cur_epoch,
+                                                                                                   cur_iter_in_an_epoch,
                                                                                                    total_iter,
                                                                                                    loss,
                                                                                                    acc,
+                                                                                                   cur_lr,
                                                                                                    elapsed_time))
-            
+
     def compute_loss(self, logit, label):
-        return 0.0
+        return self.cross_entropy_loss_fn(logit, label.to(torch.long))
 
     def compute_acc(self, logit, label):
-        return 0.0
+        logit_arg_max = torch.argmax(logit, dim=1)
+        total_size = logit.size(dim=0)
+        eq_result = torch.eq(logit_arg_max, label).to(torch.int32)
+        num_correct = torch.sum(eq_result).item()
+        acc = float(num_correct) / float(total_size)
+        return acc
 
     def job_after_iterations(self, params_dict):
         print("job_after_iterations")

@@ -32,7 +32,7 @@ class TrainTask(ABCTask):
         print("job_after_iterations")
 
     @abstractmethod
-    def job_for_each_iteration(self, params_dict, cur_iter, cur_epoch):
+    def job_for_each_iteration(self, params_dict, cur_iter_in_an_epoch, cur_epoch):
         print("job_for_each_iteration")
 
     def start_train(self):

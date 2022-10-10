@@ -3,7 +3,7 @@ from abc import *
 class ABCTask:
     def __init__(self, config):
         self.set_config(config)
-        print("init ABC_Task")
+        # print("init ABC_Task")
 
 
     @abstractmethod
