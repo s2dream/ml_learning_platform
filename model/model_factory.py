@@ -4,6 +4,8 @@ from model.dummy_model import DummyModel
 
 
 class ModelFactory:
+
+
     @classmethod
     def create_model(cls, model_enum:ModelE, configuration:Configuration):
         pass
@@ -15,3 +17,10 @@ class ModelFactory:
         #     return GAT(configuration)
         # elif model_enum == ModelE.GRAPHOMER:
         #     return Graphomer(configuration)
+
+
+
+
+
+
+

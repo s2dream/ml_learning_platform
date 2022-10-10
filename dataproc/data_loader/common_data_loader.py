@@ -5,7 +5,6 @@ import pickle as pkl
 import torch.utils.data
 from torch.utils.data import Dataset, DataLoader
 
-
 class PickleDataset(Dataset):
     def __init__(self, bin_file_path, idx_file_path):
         if not path.exists(bin_file_path):
@@ -37,6 +36,7 @@ class PickleDataset(Dataset):
 def get_dataloader(dataset, batch_size, shuffle=True):
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
     return dataloader
+
 
 
 def get_distributed_dataloader(dataset, num_replicas, rank, batch_size, shuffle=True):

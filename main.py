@@ -7,32 +7,29 @@ from configuration.configuration import Configuration
 from utility.parse_arguments import ParseArgs
 from model.model_enum import ModelE
 
+from task.dummy_tasks.dummy_train_task import DummyTrainTask
+from task.dummy_tasks.dummy_test_task import DummyInferenceTask
+
 CPU = "cpu"
 GPU = "cuda"
 
-def get_model_type(type_str:str):
-    if type_str == "dummy":
-        return ModelE.DUMMY_MODEL
-    else:
-        return None
 
-def get_task(type_str:str, model_type:ModelE, configruation:Configuration=None):
+#
+# def get_model_class(type_str:str, alias_to_class):
+#     if type_str in alias_to_class:
+#         return alias_to_class[type_str]
+#     else:
+#         return None
+
+def get_task(type_str:str, model_name:ModelE, configruation:Configuration=None):
     if type_str.lower() == "train":
-        pass
-        # if model_type == ModelE.GCN:
-        #     return TrainGCN(configuration=configruation)
-        # elif model_type == ModelE.GAT:
-        #     return TrainGAT(configuration=configruation)
-        # elif model_type == ModelE.GRAPHOMER:
-        #     return TrainGraphModel(configruation=configruation)
+        if model_name == "dummy":
+            return DummyTrainTask()
+
+
     else:
         pass
-        # if model_type == ModelE.GCN:
-        #     return InferenceGCN(configuration=configruation)
-        # elif model_type == ModelE.GAT:
-        #     return InferenceGAT(configuration=configruation)
-        # elif model_type == ModelE.GRAPHOMER:
-        #     return InferenceGraphomer(configuration=configruation)
+
     return None
 
 
@@ -72,20 +69,19 @@ class Main:
 
     def launch_dist(self, rank, world_size):
         self.setup_dist_environ(rank, world_size)
-        model_type = get_model_type(self.model_name)
-        task = get_task(self.task_mode, model_type, None)
+        # model_type = get_model_type(self.model_name)
+        task = get_task(self.task_mode, self.model_name, None)
         task.setup_model(device=rank, dist=True)
-        task.start_train()
+        task.start_task()
         self.cleanup_dist()
 
     def cleanup_dist(self):
         dist.destroy_process_group()
 
     def launch_single(self, device):
-        model_type = get_model_type(self.model_name)
-        task = get_task(self.task_mode, model_type, None)
+        task = get_task(self.task_mode, self.model_name, None)
         task.setup_model(device=device)
-        task.start_train()
+        task.start_task()
 
     def launch(self):
         if torch.cuda.is_available():
