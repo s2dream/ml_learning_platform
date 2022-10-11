@@ -1,12 +1,13 @@
 from abc import *
 
 class ABCTask:
-    def __init__(self, config):
+    def __init__(self, device=None, config=None):
         self.set_config(config)
-        # print("init ABC_Task")
+        self.set_device(device)
 
+    def set_device(self, device):
+        self.device = device
 
-    @abstractmethod
     def set_config(self, config):
         self.config = config
 

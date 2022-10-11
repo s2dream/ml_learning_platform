@@ -25,7 +25,8 @@ def dummy_collate_fn(batch):
     for data in batch:
         idx.append(data[0])
         input.append(data[1])
-        label.append(random.randint(0,3))
+        label_of_input = int(int(sum(data[1])) // 30)
+        label.append(label_of_input)
     idx = torch.tensor(idx, dtype=torch.int)
     input_tensor = torch.tensor(input, dtype=torch.float32)
     label_tensor = torch.tensor(label, dtype=torch.int)

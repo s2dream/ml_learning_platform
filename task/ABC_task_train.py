@@ -5,8 +5,8 @@ import torch
 
 class TrainTask(ABCTask):
 
-    def __init__(self, config):
-        super().__init__(config)
+    def __init__(self, device, config):
+        super().__init__(device, config)
 
     @abstractmethod
     def get_num_epochs(self):
@@ -53,7 +53,6 @@ class TrainTask(ABCTask):
 
     def start_task(self):
         self.start_train()
-
 
     def save_total_ckpt(self, model, opt, cur_epoch, cur_iter, save_path):
         params = dict()

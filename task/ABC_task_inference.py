@@ -1,16 +1,10 @@
 from task.ABC_task import ABCTask
 from abc import *
 
-
 class InferenceTask(ABCTask):
-
-
-
-
-    def __init__(self,config):
-        super().__init__(config)
+    def __init__(self,device, config):
+        super().__init__(device, config)
         print("init InferenceTask")
-
 
     @abstractmethod
     def get_num_iterations(self):
@@ -28,7 +22,6 @@ class InferenceTask(ABCTask):
     def job_for_each_iteration(self, params_dict):
         print("job_for_each_iteration")
 
-
     def start_inference(self):
         params_dict = dict()
         num_iterations = self.get_num_iterations()
@@ -40,4 +33,3 @@ class InferenceTask(ABCTask):
 
     def start_task(self):
         self.start_inference()
-    

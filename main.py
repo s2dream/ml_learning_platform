@@ -21,13 +21,13 @@ GPU = "cuda"
 #     else:
 #         return None
 
-def get_task(type_str:str, model_name:ModelE, configruation:Configuration=None):
+def get_task(type_str:str, model_name:ModelE, configruation:Configuration=None, device='cpu'):
     if type_str.lower() == "train":
         if model_name == "dummy":
-            return DummyTrainTask()
+            return DummyTrainTask(device)
     else:
         if model_name == "dummy":
-            return DummyInferenceTask()
+            return DummyInferenceTask(device)
     return None
 
 class Main:
@@ -67,8 +67,8 @@ class Main:
     def launch_dist(self, rank, world_size):
         self.setup_dist_environ(rank, world_size)
         # model_type = get_model_type(self.model_name)
-        task = get_task(self.task_mode, self.model_name, None)
-        task.setup_model(device=rank, dist=True)
+        task = get_task(self.task_mode, self.model_name, None, device=rank)
+        # task.setup_model(device=rank, dist=True)
         task.start_task()
         self.cleanup_dist()
 
@@ -76,8 +76,8 @@ class Main:
         dist.destroy_process_group()
 
     def launch_single(self, device):
-        task = get_task(self.task_mode, self.model_name, None)
-        task.setup_model(device=device)
+        task = get_task(self.task_mode, self.model_name, None, device=device)
+        # task.setup_model(device=device)
         task.start_task()
 
     def launch(self):

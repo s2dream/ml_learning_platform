@@ -1,12 +1,13 @@
 from task.ABC_task_inference import InferenceTask
+from configuration.config_dummy import ConfigurationTrain as Configuration
 
 
 class DummyInferenceTask(InferenceTask):
 
-
-
-    def __init__(self,config):
-        super().__init__(config)
+    def __init__(self, device, config=None):
+        if config == None:
+            config = Configuration()
+        super().__init__(device, config)
         print("init DummyInferenceTask")
 
     def get_num_iterations(self):
@@ -21,7 +22,6 @@ class DummyInferenceTask(InferenceTask):
 
     def job_for_each_iteration(self, params_dict):
         print("job_for_each_iteration")
-
 
 if __name__ == "__main__":
     a = DummyInferenceTask(None)

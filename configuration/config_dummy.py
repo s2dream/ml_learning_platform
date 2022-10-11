@@ -3,8 +3,8 @@
 class ConfigurationTrain:
     def __init__(self):
         self.conf_dict = dict()
-        self.conf_dict["num_epoch"] = 10
-        self.conf_dict["batch_size"] = 64
+        self.conf_dict["num_epoch"] = 30
+        self.conf_dict["batch_size"] = 128
         self.conf_dict["train_data_dir_path"] = ""
         self.conf_dict["test_data_dir_path"] = ""
 
