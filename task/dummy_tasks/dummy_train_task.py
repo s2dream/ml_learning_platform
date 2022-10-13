@@ -19,7 +19,10 @@ class DummyTrainTask(TrainTask):
         return num_epoch
 
     def get_num_iterations(self):
-        return len(self.dataset_loader)
+        num_replica = 1
+        if self.dist:
+            num_replica = self.num_replica
+        return len(self.dataset_loader) // num_replica
 
     def job_before_epochs_loops(self, params_dict):
         '''
