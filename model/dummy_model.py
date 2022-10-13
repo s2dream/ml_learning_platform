@@ -54,8 +54,7 @@ class DummyModel(Module):
         x = self.layer_norm(x)
         output = self.linear_relu_stack_2nd(x)
         output = self.final_layer(output)
-        logit = self.softmax(output)
-        return logit.to('cpu')
+        return output.to('cpu')
 
 
 
@@ -81,5 +80,4 @@ class DummyModel2(Module):
         x = self.linear_1st(x)
         x = self.layer_norm(x)
         output = self.final_layer(x)
-        logit = self.softmax(output)
-        return logit.to('cpu')
+        return output.to('cpu')

@@ -5,10 +5,14 @@ import torch
 import torch.utils.data
 from torch.utils.data import Dataset, DataLoader
 import random
+from torch.utils.data.distributed import DistributedSampler
+from torch.utils.data import BatchSampler
 
 class DummyDataset(Dataset):
-    def __init__(self, datasize= 8*8*8*1024, data_dim = 128 ):
+    def __init__(self, path=None, datasize= 8*8*8*1024, data_dim = 128 ):
         self.dataset = [[random.random() for _ in range(data_dim)] for i in range(datasize)]
+        if path is not None:
+            pass
 
     def __len__(self):
         return len(self.dataset)
@@ -34,9 +38,17 @@ def dummy_collate_fn(batch):
     output_dict["label"] = label_tensor
     return output_dict
 
-def get_dataloader(batch_size, shuffle=True):
-    dataset = DummyDataset()
+def get_dataloader(batch_size, shuffle=True, path=None):
+    dataset = DummyDataset(path)
     dataloader = DataLoader(dataset, batch_size=batch_size, collate_fn=dummy_collate_fn, shuffle=shuffle)
+    return dataloader
+
+
+def get_dataloader(batch_size, path, num_replicas, rank):
+    dataset = DummyDataset(path)
+    dist_sampler = DistributedSampler(dataset, num_replicas=num_replicas, rank=rank)
+    sampler = BatchSampler(dist_sampler, batch_size=batch_size, drop_last=True)
+    dataloader = DataLoader(dataset, collate_fn=dummy_collate_fn, sampler=sampler)
     return dataloader
 
 def test():
