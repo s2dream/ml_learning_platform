@@ -5,9 +5,11 @@ import torch
 
 class TrainTask(ABCTask):
 
-    def __init__(self, device, config):
+    def __init__(self, device, config, dist=False, num_replica=1, rank=0):
         super().__init__(device, config)
-
+        self.dist=dist
+        self.num_replica = num_replica
+        self.rank = rank
     @abstractmethod
     def get_num_epochs(self):
         print("get_num_epochs")

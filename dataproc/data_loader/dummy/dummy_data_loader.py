@@ -44,7 +44,7 @@ def get_dataloader(batch_size, shuffle=True, path=None):
     return dataloader
 
 
-def get_dataloader(batch_size, path, num_replicas, rank):
+def get_dist_dataloader(batch_size, path, num_replicas, rank):
     dataset = DummyDataset(path)
     dist_sampler = DistributedSampler(dataset, num_replicas=num_replicas, rank=rank)
     sampler = BatchSampler(dist_sampler, batch_size=batch_size, drop_last=True)

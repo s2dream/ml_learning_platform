@@ -1,15 +1,17 @@
 from task.ABC_task_train import TrainTask
 from configuration.config_dummy import ConfigurationTrain as Configuration
 from dataproc.data_loader.dummy.dummy_data_loader import get_dataloader
+from dataproc.data_loader.dummy.dummy_data_loader import get_dist_dataloader
+
 from model.dummy_model import DummyModel2 as DummyModel
 import torch
 import time
 
 class DummyTrainTask(TrainTask):
-    def __init__(self, device, config=None):
+    def __init__(self, device, config=None, dist=False, num_replica=1, rank=0):
         if config == None:
             config = Configuration()
-        super().__init__(device, config)
+        super().__init__(device, config, dist, num_replica, rank)
         self.cross_entropy_loss_fn = torch.nn.CrossEntropyLoss()
 
     def get_num_epochs(self):
@@ -30,7 +32,10 @@ class DummyTrainTask(TrainTask):
         '''
         # print("job_before_epochs")
         batch_size = self.config.get_val("batch_size")
-        self.dataset_loader = get_dataloader(batch_size=batch_size)
+        if not self.dist:
+            self.dataset_loader = get_dataloader(batch_size=batch_size)
+        else:
+            self.dataset_loader = get_dist_dataloader(batch_size, path=None, num_replicas=self.num_replica, rank=self.rank)
         self.model = DummyModel()
         self.model.to(self.device)
         self.set_adam_optimizer(self.model)
