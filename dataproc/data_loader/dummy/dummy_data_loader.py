@@ -7,8 +7,7 @@ from torch.utils.data import Dataset, DataLoader
 import random
 
 class DummyDataset(Dataset):
-    def __init__(self, datasize= 8*8*1024, data_dim = 128 ):
-        # self.data_tensor = torch.nn.rand(datasize, data_dim, dtype=torch.float32)
+    def __init__(self, datasize= 8*8*8*1024, data_dim = 128 ):
         self.dataset = [[random.random() for _ in range(data_dim)] for i in range(datasize)]
 
     def __len__(self):
@@ -16,7 +15,6 @@ class DummyDataset(Dataset):
 
     def __getitem__(self, idx):
         return (idx, self.dataset[idx])
-
 
 def dummy_collate_fn(batch):
     idx = []
@@ -41,7 +39,6 @@ def get_dataloader(batch_size, shuffle=True):
     dataloader = DataLoader(dataset, batch_size=batch_size, collate_fn=dummy_collate_fn, shuffle=shuffle)
     return dataloader
 
-
 def test():
     dataloader = get_dataloader(20)
     iter_dataloader = iter(dataloader)
@@ -58,3 +55,5 @@ def test():
 
 if __name__ == "__main__":
     test()
+
+

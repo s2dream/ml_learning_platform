@@ -1,7 +1,7 @@
 from task.ABC_task_train import TrainTask
 from configuration.config_dummy import ConfigurationTrain as Configuration
 from dataproc.data_loader.dummy.dummy_data_loader import get_dataloader
-from model.dummy_model import DummyModel
+from model.dummy_model import DummyModel2 as DummyModel
 import torch
 import time
 
@@ -72,14 +72,14 @@ class DummyTrainTask(TrainTask):
         input = data["input"]
         label = data["label"]
 
+
+        self.optimizer.zero_grad()
         logit = self.model(input.to(self.device))
         loss = self.compute_loss(logit, label)
 
-        self.optimizer.zero_grad()
         loss.backward()
         self.optimizer.step()
         self.lr_scheduler.step()
-
         if cur_iter_in_an_epoch > 0 and cur_iter_in_an_epoch % 100 == 0:
             total_iter = self.get_num_iterations()
             acc = self.compute_acc(logit, label)
@@ -93,7 +93,6 @@ class DummyTrainTask(TrainTask):
                                                                                                            acc,
                                                                                                            cur_lr,
                                                                                                            elapsed_time))
-
     def compute_loss(self, logit, label):
         return self.cross_entropy_loss_fn(logit, label.to(torch.long))
 
@@ -106,7 +105,7 @@ class DummyTrainTask(TrainTask):
         return acc
 
     def job_after_iterations(self, params_dict):
-        print("End of Epoch")
+        pass
 
 
 if __name__ == "__main__":
