@@ -21,10 +21,10 @@ GPU = "cuda"
 #     else:
 #         return None
 
-def get_task(type_str:str, model_name:ModelE, configruation:Configuration=None, device='cpu'):
+def get_task(type_str:str, model_name:str, configruation:Configuration=None, device='cpu', dist=False, rank=0, num_replica=1):
     if type_str.lower() == "train":
         if model_name == "dummy":
-            return DummyTrainTask(device)
+            return DummyTrainTask(device, config=configruation, dist=dist, rank=rank, num_replica=num_replica)
     else:
         if model_name == "dummy":
             return DummyInferenceTask(device)
@@ -54,7 +54,7 @@ class Main:
 
     def setup_dist_environ(self, rank, world_size):
         os.environ['MASTER_ADDR'] = '127.0.0.1'
-        os.environ['MASTER_PORT'] = '50012'
+        os.environ['MASTER_PORT'] = '5001'
         dist.init_process_group("nccl", rank=rank, world_size=world_size)
 
     def set_distributed_gpus(self):

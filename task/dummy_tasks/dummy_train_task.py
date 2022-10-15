@@ -12,7 +12,7 @@ class DummyTrainTask(TrainTask):
         if config == None:
             config = Configuration()
         super().__init__(device, config, dist, num_replica, rank)
-        self.cross_entropy_loss_fn = torch.nn.CrossEntropyLoss()
+        self.cross_entropy_loss_fn = torch.nn.CrossEntropyLoss(reduction='sum')
 
     def get_num_epochs(self):
         num_epoch = self.config.get_val("num_epoch")
@@ -70,7 +70,7 @@ class DummyTrainTask(TrainTask):
     def job_before_iterations(self, params_dict):
         # print("job_before_iterations")
         self.iter_dataloader = iter(self.dataset_loader)
-        print("New epoch Start")
+
 
     def job_for_each_iteration(self, params_dict, cur_iter_in_an_epoch, cur_epoch):
         start_time = time.time()
@@ -94,7 +94,8 @@ class DummyTrainTask(TrainTask):
             elapsed_time = time.time() - start_time
             cur_lr = self.lr_scheduler.get_lr()
             cur_lr = cur_lr[0]
-            print("[epoch:{0},iter:{1}/{2}] loss:{3}, accuracy:{4}, lr:{5}, elapsed_time(iter):{6}".format(cur_epoch,
+            if not self.dist or (self.dist and self.rank==0):
+                print("[epoch:{0},iter:{1}/{2}] loss:{3}, accuracy:{4}, lr:{5}, elapsed_time(iter):{6}".format(cur_epoch,
                                                                                                            cur_iter_in_an_epoch,
                                                                                                            total_iter,
                                                                                                            loss,
