@@ -2,10 +2,11 @@ from task.ABC_task_train import TrainTask
 from configuration.config_dummy import ConfigurationTrain as Configuration
 from dataproc.data_loader.dummy.dummy_data_loader import get_dataloader
 from dataproc.data_loader.dummy.dummy_data_loader import get_dist_dataloader
-
 from model.dummy_model import DummyModel2 as DummyModel
+from torch.utils.tensorboard import SummaryWriter
 import torch
 import time
+
 
 class DummyTrainTask(TrainTask):
     def __init__(self, device, config=None, dist=False, num_replica=1, rank=0):
@@ -13,6 +14,10 @@ class DummyTrainTask(TrainTask):
             config = Configuration()
         super().__init__(device, config, dist, num_replica, rank)
         self.cross_entropy_loss_fn = torch.nn.CrossEntropyLoss(reduction='sum')
+
+    def set_summary_writer(self):
+        path = self.config.get_val("summary_writer_path")
+        self.writer = SummaryWriter(path)
 
     def get_num_epochs(self):
         num_epoch = self.config.get_val("num_epoch")

@@ -14,6 +14,7 @@ class ConfigurationTrain:
         self.conf_dict["epsilon"] = 1e-8
         self.conf_dict["weight_decay"] = 1e-2
 
+        self.conf_dict["summary_writer_path"] = "summary"
 
     def get_val(self, key):
         if key in self.conf_dict:

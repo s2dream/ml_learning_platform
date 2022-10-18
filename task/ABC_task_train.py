@@ -1,5 +1,6 @@
 from task.ABC_task import ABCTask
 from abc import *
+from torch.utils.tensorboard import SummaryWriter
 import torch
 
 
@@ -10,6 +11,12 @@ class TrainTask(ABCTask):
         self.dist=dist
         self.num_replica = num_replica
         self.rank = rank
+        self.writer = None
+
+    @abstractmethod
+    def set_summary_writer(self):
+        print("set_summary_writer")
+
     @abstractmethod
     def get_num_epochs(self):
         print("get_num_epochs")
@@ -85,3 +92,7 @@ class TrainTask(ABCTask):
     def load_optimizer_ckpt(self, opt, load_path):
         loaded_params = torch.load(load_path)
         opt.load_state_dict(loaded_params)
+
+    def summary_add_scalar(self,tag,value,global_step):
+        if self.writer is not None:
+            self.writer.add_scalar(tag=tag, value=value, global_step=global_step)
