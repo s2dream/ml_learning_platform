@@ -6,6 +6,7 @@ from model.dummy_model import DummyModel2 as DummyModel
 from torch.utils.tensorboard import SummaryWriter
 import torch
 import time
+from torch.nn.parallel import DistributedDataParallel as DDP
 
 
 class DummyTrainTask(TrainTask):
@@ -46,6 +47,8 @@ class DummyTrainTask(TrainTask):
             self.dataset_loader = get_dist_dataloader(batch_size, path=None, num_replicas=self.num_replica, rank=self.rank)
         self.model = DummyModel()
         self.model.to(self.device)
+        if self.dist:
+            self.model = DDP(self.model, device_ids=[self.rank])
         self.set_adam_optimizer(self.model)
 
     def set_adam_optimizer(self, model):
