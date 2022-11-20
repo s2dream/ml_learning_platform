@@ -53,6 +53,7 @@ class Main:
         self.device_type = GPU
 
     def setup_dist_environ(self, rank, world_size):
+        torch.cuda.set_device(rank)
         os.environ['MASTER_ADDR'] = '127.0.0.1'
         os.environ['MASTER_PORT'] = '5001'
         dist.init_process_group("nccl", rank=rank, world_size=world_size)
