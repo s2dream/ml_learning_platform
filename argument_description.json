@@ -1,0 +1,52 @@
+{
+  "task": {
+    "dummy_train": {
+      "module_name": "task.dummy.dummy_train_task",
+      "class_name": "DummyTrainTask"
+    },
+    "dummy_test": {
+      "module_name": "task.dummy.dummy_test_task",
+      "class_name": "DummyTestTask"
+    }
+  },
+  "model": {
+    "dummy_classifier": {
+      "module_name": "model.dummy.dummy_model",
+      "class_name": "DummyModel"
+    }
+  },
+  "configuration": {
+    "dummy_train": {
+      "module_name": "configuration.dummy.config_dummy",
+      "class_name": "DummyConfigurationTrain"
+    },
+    "dummy_test": {
+      "module_name": "configuration.dummy.config_dummy",
+      "class_name": "DummyConfigurationTest"
+    }
+  },
+  "optimizer": {
+    "adamw": {
+      "module_name": "torch.optim",
+      "class_name": "AdamW"
+    },
+    "SGD": {
+      "module_name": "torch.optim",
+      "class_name": "SGD"
+    },
+    "adadelta": {
+      "module_name": "torch.optim",
+      "class_name": "Adadelta"
+    },
+    "adagrad": {
+      "module_name": "torch.optim",
+      "class_name": "Adagrad"
+    }
+  },
+  "dataloader": {
+    "dummy": {
+      "module_name": "dataproc.data_loader.dummy.dummy_data_loader_helper",
+      "class_name": "DataLoaderHelper"
+    }
+  }
+}

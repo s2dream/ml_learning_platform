@@ -1,5 +1,5 @@
 from task.ABC_task_inference import InferenceTask
-from configuration.config_dummy import ConfigurationTrain as Configuration
+from configuration.dummy.config_dummy import DummyConfigurationTrain as Configuration
 
 
 class DummyInferenceTask(InferenceTask):

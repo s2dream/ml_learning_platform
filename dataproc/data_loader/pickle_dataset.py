@@ -1,7 +1,6 @@
 from os import path
 import sys
 import pickle as pkl
-
 import torch.utils.data
 from torch.utils.data import Dataset, DataLoader
 
@@ -32,19 +31,3 @@ class PickleDataset(Dataset):
         self.bin_data_file.seek(position)
         data = pkl.load(self.bin_data_file)
         return data
-
-def get_dataloader(dataset, batch_size, shuffle=True):
-    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
-    return dataloader
-
-
-
-def get_distributed_dataloader(dataset, num_replicas, rank, batch_size, shuffle=True):
-    def customized_collated_fn(): # 참조: https://velog.io/@jiyoung/torch-collatefn%EC%97%90-arguments-%EC%B6%94%EA%B0%80%ED%95%98%EA%B8%B0
-        pass
-
-    # sampler and batch sampler are mutually exclusive
-    sampler = torch.utils.data.DistributedSampler(dataset, num_replicas=num_replicas, rank=rank, shuffle=shuffle )
-    dataloader = DataLoader(dataset, batch_size=batch_size, collate_fn=customized_collated_fn, shuffle=shuffle, sampler=sampler)
-    return dataloader
-

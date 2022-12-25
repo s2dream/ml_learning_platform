@@ -3,16 +3,14 @@ from utility.load_model_description import LoadArgumentDescriptionMethod
 from utility.module_loader import str_to_class_module
 
 
-class ModelFactory:
+class TaskFactory:
     @classmethod
-    def create_model(cls, str_type, configuration:ABCConfiguration):
+    def create_task(cls, str_type, device, dist=False, num_replica=1, rank=0, args=None):
         arguments_desc_json = LoadArgumentDescriptionMethod.load_argument_description()
-        dict_config = arguments_desc_json["model"]
+        dict_config = arguments_desc_json["task"]
         if not str_type in dict_config:
-            raise Exception('There is no model option such as {0}'.format(str_type))
+            raise Exception('There is no task option such as {0}'.format(str_type))
         module_str = dict_config[str_type]["module_name"]
         class_str = dict_config[str_type]["class_name"]
         class_module = str_to_class_module(module_str, class_str)
-        return class_module(configuration)
-
-
+        return class_module(device, dist=dist, num_replica=num_replica, rank=rank, args=args)

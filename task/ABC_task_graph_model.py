@@ -18,4 +18,3 @@ class TaskGraphModel(metaclass=ABCMeta):
     def start_task(self):
         pass
 
-

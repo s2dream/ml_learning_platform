@@ -1,8 +1,7 @@
+from configuration.configuration_factory import ConfigurationFactory
+from model.model_factory import ModelFactory
 from task.ABC_task_train import TrainTask
-from configuration.config_dummy import ConfigurationTrain as Configuration
-from dataproc.data_loader.dummy.dummy_data_loader import get_dataloader
-from dataproc.data_loader.dummy.dummy_data_loader import get_dist_dataloader
-from model.dummy_model import DummyModel2 as DummyModel
+from dataproc.data_loader.dummy.dummy_data_loader_helper import DummyDataLoaderHelper
 from torch.utils.tensorboard import SummaryWriter
 import torch
 import time
@@ -10,10 +9,10 @@ from torch.nn.parallel import DistributedDataParallel as DDP
 
 
 class DummyTrainTask(TrainTask):
-    def __init__(self, device, config=None, dist=False, num_replica=1, rank=0):
-        if config == None:
-            config = Configuration()
-        super().__init__(device, config, dist, num_replica, rank)
+    def __init__(self, device, dist=False, num_replica=1, rank=0, args=None):
+        task_name = args.task
+        config = ConfigurationFactory.create_configuration(task_name)
+        super().__init__(device, config, dist, num_replica, rank, args)
         self.cross_entropy_loss_fn = torch.nn.CrossEntropyLoss(reduction='sum')
 
     def set_summary_writer(self):
@@ -40,12 +39,14 @@ class DummyTrainTask(TrainTask):
         :return:
         '''
         # print("job_before_epochs")
+        dummy_dataloader_helper = DummyDataLoaderHelper()
         batch_size = self.config.get_val("batch_size")
         if not self.dist:
-            self.dataset_loader = get_dataloader(batch_size=batch_size)
+            self.dataset_loader = dummy_dataloader_helper.get_dataloader(batch_size=batch_size)
         else:
-            self.dataset_loader = get_dist_dataloader(batch_size, path=None, num_replicas=self.num_replica, rank=self.rank)
-        self.model = DummyModel()
+            self.dataset_loader = dummy_dataloader_helper.get_dist_dataloader(batch_size, path=None, num_replicas=self.num_replica, rank=self.rank)
+        # self.model = DummyModel()
+        self.model = ModelFactory.create_model(self.model_name, self.config)
         self.model.to(self.device)
         if self.dist:
             self.model = DDP(self.model, device_ids=[self.rank])
@@ -96,7 +97,7 @@ class DummyTrainTask(TrainTask):
         loss.backward()
         self.optimizer.step()
         self.lr_scheduler.step()
-        if cur_iter_in_an_epoch > 0 and cur_iter_in_an_epoch % 100 == 0:
+        if cur_iter_in_an_epoch > 0 and cur_iter_in_an_epoch % 10 == 0:
             total_iter = self.get_num_iterations()
             acc = self.compute_acc(logit, label)
             elapsed_time = time.time() - start_time

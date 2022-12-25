@@ -6,12 +6,20 @@ import torch
 
 class TrainTask(ABCTask):
 
-    def __init__(self, device, config, dist=False, num_replica=1, rank=0):
-        super().__init__(device, config)
+    def __init__(self, device, config, dist=False, num_replica=1, rank=0, args=None):
+        print("device",str(device))
+        print("config",str(config))
+        print("args", str(args))
+        super().__init__(device, config, args)
+
         self.dist=dist
         self.num_replica = num_replica
         self.rank = rank
         self.writer = None
+        self.optimizer_name = self.args.optimizer
+
+    def get_optimizer_name(self):
+        return self.optimizer_name
 
     @abstractmethod
     def set_summary_writer(self):
@@ -52,9 +60,9 @@ class TrainTask(ABCTask):
         params_dict = dict()
         params_dict = self.job_before_epochs_loops(params_dict)
         for epoch in range(num_epoch):
-            num_iterations = self.get_num_iterations()
+            num_iterations_in_epoch = self.get_num_iterations()
             params_dict = self.job_before_iterations(params_dict)
-            for cur_iter, iteration in enumerate(range(num_iterations)):
+            for cur_iter, iteration in enumerate(range(num_iterations_in_epoch)):
                 params_dict = self.job_for_each_iteration(params_dict, cur_iter, epoch)
             params_dict = self.job_after_iterations(params_dict)
         self.job_after_epochs_loops(params_dict)

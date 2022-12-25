@@ -2,8 +2,9 @@ import torch
 from torch.nn.modules import Module
 
 class DummyModel(Module):
-    def __init__(self):
+    def __init__(self, config):
         super().__init__()
+        self.config = config
         self.flatten = torch.nn.Flatten()
         linears = []
         linears.append(torch.nn.Linear(128, 512))
