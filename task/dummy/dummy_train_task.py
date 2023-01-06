@@ -97,7 +97,7 @@ class DummyTrainTask(TrainTask):
         loss.backward()
         self.optimizer.step()
         self.lr_scheduler.step()
-        if cur_iter_in_an_epoch > 0 and cur_iter_in_an_epoch % 10 == 0:
+        if cur_iter_in_an_epoch > 0 and cur_iter_in_an_epoch % 100 == 0:
             total_iter = self.get_num_iterations()
             acc = self.compute_acc(logit, label)
             elapsed_time = time.time() - start_time

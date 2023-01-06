@@ -8,7 +8,7 @@ class DummyConfigurationTrain(ABCConfiguration):
         self.conf_dict["train_data_dir_path"] = [""]
         self.conf_dict["test_data_dir_path"] = [""]
 
-        self.conf_dict["lr"] = 0.01
+        self.conf_dict["lr"] = 0.0001
         self.conf_dict["adam_beta_1"] = 0.9
         self.conf_dict["adam_beta_2"] = 0.999
         self.conf_dict["epsilon"] = 1e-8
