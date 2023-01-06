@@ -39,6 +39,7 @@ class DummyTrainTask(TrainTask):
         :return:
         '''
         # print("job_before_epochs")
+        self.start_time = time.time()
         dummy_dataloader_helper = DummyDataLoaderHelper()
         batch_size = self.config.get_val("batch_size")
         if not self.dist:
@@ -74,7 +75,8 @@ class DummyTrainTask(TrainTask):
                                                                 anneal_strategy='linear')
 
     def job_after_epochs_loops(self, params_dict):
-        pass
+        self.end_time = time.time()
+        print("total elapsed time:{0}".format(self.end_time-self.start_time))
 
     def job_before_iterations(self, params_dict):
         # print("job_before_iterations")
