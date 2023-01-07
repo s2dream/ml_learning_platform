@@ -8,4 +8,6 @@ skeleton codes for learning ml models
 [Supporting Models]
 - Transformer
 - Graph Neural Networks supported by PyG  
-
+- Generative Models
+  - AutoEncoder (Based on Transformer)
+  - VAE (Based on Transformer)
