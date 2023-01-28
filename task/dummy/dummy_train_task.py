@@ -6,6 +6,9 @@ from torch.utils.tensorboard import SummaryWriter
 import torch
 import time
 from torch.nn.parallel import DistributedDataParallel as DDP
+import wandb
+
+wandb.init(project="dummy_project", entity="s2dream")
 
 
 class DummyTrainTask(TrainTask):
@@ -14,6 +17,17 @@ class DummyTrainTask(TrainTask):
         config = ConfigurationFactory.create_configuration(task_name)
         super().__init__(device, config, dist, num_replica, rank, args)
         self.cross_entropy_loss_fn = torch.nn.CrossEntropyLoss(reduction='sum')
+        self.set_wandb()
+
+    def set_wandb(self):
+        batch_size = self.config.get_val("batch_size")
+        learning_rate = self.config.get_val("lr")
+        epochs = self.config.get_val("num_epoch")
+        wandb.config = {
+            "learning_rate": learning_rate,
+            "epochs": epochs,
+            "batch_size": batch_size
+        }
 
     def set_summary_writer(self):
         path = self.config.get_val("summary_writer_path")
@@ -99,6 +113,11 @@ class DummyTrainTask(TrainTask):
         loss.backward()
         self.optimizer.step()
         self.lr_scheduler.step()
+
+        #wandb
+        wandb.log({"loss": loss,
+                   "accuracy": self.compute_acc(logit, label)})
+
         if cur_iter_in_an_epoch > 0 and cur_iter_in_an_epoch % 100 == 0:
             total_iter = self.get_num_iterations()
             acc = self.compute_acc(logit, label)
