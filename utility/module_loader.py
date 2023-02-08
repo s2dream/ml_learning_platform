@@ -7,6 +7,7 @@ def str_to_class_module(module_name, class_name):
     class_ = None
     try:
         module_ = importlib.import_module(module_name)
+        print(module_)
         try:
             class_ = getattr(module_, class_name)
         except AttributeError as e1:
