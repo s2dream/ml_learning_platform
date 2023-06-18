@@ -1,5 +1,9 @@
 from utility.load_model_description import LoadArgumentDescriptionMethod
 from utility.module_loader import str_to_class_module
+from log_module.ml_logger import MLLogger
+import sys
+logger = MLLogger.get_logger()
+
 class ConfigurationFactory:
     @classmethod
     def create_configuration(cls, str_type):

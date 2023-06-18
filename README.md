@@ -17,3 +17,7 @@ skeleton codes for learning ml models
    5. optimizer의 경우 torch의 기본 모듈을 활용한다.
 4. python main.py --task <task name> --model <model name> --optimizer <optimizer> --dataloader <dataloader>
 5. script를 만들어두기를 추천.
+
+
+## Architecture (Class Diagram)
+![Architecture (Class Diagram)](readme_image/architecture(class_diagram).png)

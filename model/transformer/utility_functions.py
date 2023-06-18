@@ -1,4 +1,5 @@
 import copy
+import sys
 from typing import Callable
 from torch import Tensor
 from torch.nn import functional as F
@@ -12,5 +13,7 @@ def _get_activation_fn(activation: str) -> Callable[[Tensor], Tensor]:
         return F.relu
     elif activation == "gelu":
         return F.gelu
+    else:
+        raise Exception("activation should be relu/gelu, not {}".format(activation))
 
-    raise RuntimeError("activation should be relu/gelu, not {}".format(activation))
+

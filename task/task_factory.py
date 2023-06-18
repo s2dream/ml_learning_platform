@@ -2,6 +2,7 @@ from configuration.ABC_configuration import ABCConfiguration
 from utility.load_model_description import LoadArgumentDescriptionMethod
 from utility.module_loader import str_to_class_module
 from log_module.ml_logger import MLLogger
+
 logger = MLLogger.get_logger()
 
 class TaskFactory:

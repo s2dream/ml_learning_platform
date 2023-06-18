@@ -10,8 +10,7 @@ logger = MLLogger.get_logger()
 class PickleDataset(Dataset):
     def __init__(self, bin_file_path, idx_file_path):
         if not path.exists(bin_file_path):
-            logger.info("bin_file_path not exists. check -> "+str(bin_file_path))
-            sys.exist(1)
+            raise Exception("bin_file_path not exists. check -> "+str(bin_file_path))
         if not path.exists(idx_file_path):
             logger.info("idx_file_path not exsits. check -> "+str(idx_file_path))
         self.bin_data_file = open(bin_file_path,"rb")

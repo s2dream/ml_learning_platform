@@ -1,3 +1,5 @@
+import traceback
+import sys
 import torch
 import torch.multiprocessing as mp
 import torch.distributed as dist
@@ -25,7 +27,6 @@ class Main:
             else:
                 self.set_single_gpu()
         else:
-            # print(str(torch.cuda.get_device_name(0)))
             self.set_cpu_environment()
 
     def get_task(self, task_name, device, dist=False, num_replica=1, rank=0):
@@ -62,19 +63,26 @@ class Main:
         task.start_task()
 
     def launch(self):
-        if torch.cuda.is_available():
-            world_size = self.num_of_devices
-            if self.args.dist and world_size > 1:
-                mp.spawn(self.launch_dist,
-                         args=(world_size,),
-                         nprocs=world_size,
-                         join=True)
-                return
+        try:
+            if torch.cuda.is_available():
+                world_size = self.num_of_devices
+                if self.args.dist and world_size > 1:
+                    mp.spawn(self.launch_dist,
+                             args=(world_size,),
+                             nprocs=world_size,
+                             join=True)
+                    return
+                else:
+                    device_name = GPU
             else:
-                device_name = GPU
-        else:
-            device_name = CPU
-        self.launch_single(torch.device(device_name))
+                device_name = CPU
+            self.launch_single(torch.device(device_name))
+        except Exception as e:
+            traceback.print_exc()
+            logger.critical(str(e))
+            logger.critical("---------------- job finished with excpetion !! ----------------")
+            sys.exit(1)
+        logger.info("---------------- job finished!! ----------------")
 
 
 if __name__ == '__main__':
