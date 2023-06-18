@@ -135,7 +135,6 @@ class CelebADataLoaderHelper(Dataset):
         }
         return ret
 
-
     def get_dataloader(self, batch_size, shuffle=True, path=None):
         dataset = CelebADataset(path)
         dataloader = self.get_dataloader_with_dataset(dataset, batch_size, shuffle, path)

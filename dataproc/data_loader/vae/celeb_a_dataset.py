@@ -12,7 +12,6 @@ class CelebADataset(Dataset):
                  list_of_data_paths: str,
                  patch_size: Union[int, Sequence[int]] = (256, 256),
                 ):
-
         self.customed_transforms = transforms.Compose([transforms.RandomHorizontalFlip(),
                                               transforms.CenterCrop(148),
                                               transforms.Resize(self.patch_size),
@@ -29,3 +28,4 @@ class CelebADataset(Dataset):
         img = Image.open(img_path)
         data_tensor = self.customed_transforms(img)
         return data_tensor
+
