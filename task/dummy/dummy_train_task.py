@@ -1,6 +1,6 @@
 from configuration.configuration_factory import ConfigurationFactory
 from model.model_factory import ModelFactory
-from task.ABC_task_train import TrainTask
+from task.ABC_task_train import ABCTrainTask
 from dataproc.data_loader.dummy.dummy_data_loader_helper import DummyDataLoaderHelper
 from torch.utils.tensorboard import SummaryWriter
 import torch
@@ -11,7 +11,7 @@ import wandb
 wandb.init(project="dummy_project", entity="s2dream")
 
 
-class DummyTrainTask(TrainTask):
+class DummyTrainTask(ABCTrainTask):
     def __init__(self, device, dist=False, num_replica=1, rank=0, args=None):
         task_name = args.task
         config = ConfigurationFactory.create_configuration(task_name)

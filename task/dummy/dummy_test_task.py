@@ -1,8 +1,8 @@
-from task.ABC_task_inference import InferenceTask
+from task.ABC_task_inference import ABCTestTask
 from configuration.dummy.config_dummy import DummyConfigurationTrain as Configuration
 
 
-class DummyInferenceTask(InferenceTask):
+class DummyInferenceTask(ABCTestTask):
 
     def __init__(self, device, config=None):
         if config == None:

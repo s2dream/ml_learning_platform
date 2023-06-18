@@ -3,7 +3,7 @@ from abc import *
 import torch
 
 
-class TrainTask(ABCTask):
+class ABCTrainTask(ABCTask):
 
     def __init__(self, device, config, dist=False, num_replica=1, rank=0, args=None):
         print("device",str(device))
@@ -52,6 +52,10 @@ class TrainTask(ABCTask):
     def job_for_each_iteration(self, params_dict, cur_iter_in_an_epoch, cur_epoch):
         print("job_for_each_iteration")
 
+    @abstractmethod
+    def check_termination(self):
+        print("check_terminate")
+
     def start_train(self):
         num_epoch = self.get_num_epochs()
         if num_epoch is None:
@@ -63,6 +67,8 @@ class TrainTask(ABCTask):
             params_dict = self.job_before_iterations(params_dict)
             for cur_iter, iteration in enumerate(range(num_iterations_in_epoch)):
                 params_dict = self.job_for_each_iteration(params_dict, cur_iter, epoch)
+                if self.check_termination():
+                    break
             params_dict = self.job_after_iterations(params_dict)
         self.job_after_epochs_loops(params_dict)
         return params_dict

@@ -1,7 +1,7 @@
 from task.ABC_task import ABCTask
 from abc import *
 
-class InferenceTask(ABCTask):
+class ABCTestTask(ABCTask):
     def __init__(self,device, config):
         super().__init__(device, config)
         print("init InferenceTask")

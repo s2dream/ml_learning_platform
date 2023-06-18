@@ -20,4 +20,3 @@ class ConfigurationExample:
 
     def set_value(self, key, value):
         self.dict[key] = value
-
