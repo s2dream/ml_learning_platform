@@ -1,16 +1,13 @@
 from task.ABC_task import ABCTask
 from abc import *
+from log_module.ml_logger import MLLogger
 import torch
 
+logger = MLLogger.get_logger()
 
 class ABCTrainTask(ABCTask):
-
     def __init__(self, device, config, dist=False, num_replica=1, rank=0, args=None):
-        print("device",str(device))
-        print("config",str(config))
-        print("args", str(args))
         super().__init__(device, config, args)
-
         self.dist=dist
         self.num_replica = num_replica
         self.rank = rank
@@ -22,39 +19,39 @@ class ABCTrainTask(ABCTask):
 
     @abstractmethod
     def set_summary_writer(self):
-        print("set_summary_writer")
+        logger.info("set_summary_writer")
 
     @abstractmethod
     def get_num_epochs(self):
-        print("get_num_epochs")
+        logger.info("get_num_epochs")
 
     @abstractmethod
     def get_num_iterations(self):
-        print("get_num_iterations")
+        logger.info("get_num_iterations")
 
     @abstractmethod
     def job_before_epochs_loops(self, params_dict):
-        print("job_before_epochs")
+        logger.info("job_before_epochs")
 
     @abstractmethod
     def job_after_epochs_loops(self, params_dict):
-        print("job_after_epochs")
+        logger.info("job_after_epochs")
 
     @abstractmethod
     def job_before_iterations(self, params_dict):
-        print("job_before_iterations")
+        logger.info("job_before_iterations")
 
     @abstractmethod
     def job_after_iterations(self, params_dict):
-        print("job_after_iterations")
+        logger.info("job_after_iterations")
 
     @abstractmethod
     def job_for_each_iteration(self, params_dict, cur_iter_in_an_epoch, cur_epoch):
-        print("job_for_each_iteration")
+        logger.info("job_for_each_iteration")
 
     @abstractmethod
     def check_termination(self):
-        print("check_terminate")
+        logger.info("check_terminate")
 
     def start_train(self):
         num_epoch = self.get_num_epochs()

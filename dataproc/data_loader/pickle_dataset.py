@@ -3,14 +3,17 @@ import sys
 import pickle as pkl
 import torch.utils.data
 from torch.utils.data import Dataset, DataLoader
+from log_module.ml_logger import MLLogger
+
+logger = MLLogger.get_logger()
 
 class PickleDataset(Dataset):
     def __init__(self, bin_file_path, idx_file_path):
         if not path.exists(bin_file_path):
-            print("bin_file_path not exists. check -> "+str(bin_file_path))
+            logger.info("bin_file_path not exists. check -> "+str(bin_file_path))
             sys.exist(1)
         if not path.exists(idx_file_path):
-            print("idx_file_path not exsits. check -> "+str(idx_file_path))
+            logger.info("idx_file_path not exsits. check -> "+str(idx_file_path))
         self.bin_data_file = open(bin_file_path,"rb")
         self.idx_list = []
         with open(idx_file_path, "rb") as fp:
@@ -19,7 +22,7 @@ class PickleDataset(Dataset):
                 self.idx_list.append(data_index)
             except:
                 pass
-        print("{0} of data in bin file".format(len(self.idx_list)))
+        logger.info("{0} of data in bin file".format(len(self.idx_list)))
 
     def __len__(self):
         return len(self.idx_list)

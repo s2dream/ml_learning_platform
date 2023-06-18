@@ -7,6 +7,8 @@ import torch
 import time
 from torch.nn.parallel import DistributedDataParallel as DDP
 import wandb
+from log_module.ml_logger import MLLogger
+logger = MLLogger.get_logger()
 
 wandb.init(project="dummy_project", entity="s2dream")
 
@@ -90,7 +92,7 @@ class DummyTrainTask(ABCTrainTask):
 
     def job_after_epochs_loops(self, params_dict):
         self.end_time = time.time()
-        print("total elapsed time:{0}".format(self.end_time-self.start_time))
+        logger.info("total elapsed time:{0}".format(self.end_time-self.start_time))
 
     def job_before_iterations(self, params_dict):
         # print("job_before_iterations")
@@ -125,7 +127,7 @@ class DummyTrainTask(ABCTrainTask):
             cur_lr = self.lr_scheduler.get_lr()
             cur_lr = cur_lr[0]
             if not self.dist or (self.dist and self.rank==0):
-                print("[epoch:{0},iter:{1}/{2}] loss:{3}, accuracy:{4}, lr:{5}, elapsed_time(iter):{6}".format(cur_epoch,
+                logger.info("[epoch:{0},iter:{1}/{2}] loss:{3}, accuracy:{4}, lr:{5}, elapsed_time(iter):{6}".format(cur_epoch,
                                                                                                            cur_iter_in_an_epoch,
                                                                                                            total_iter,
                                                                                                            loss,

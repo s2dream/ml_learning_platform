@@ -6,12 +6,15 @@ from torch.nn.modules.transformer import Transformer
 from torch import Tensor
 from torch.nn import functional as F
 from torch.nn.modules import Module
+from log_module.ml_logger import MLLogger
 
 import torch
 from ABC_vae import ABCVAE
 from torch import nn
 from torch.nn import functional as F
 from typing import *
+
+logger = MLLogger.get_logger()
 
 DEFAULT_HIDDEN_DIMS = [32, 64, 128, 256, 512]
 
@@ -85,9 +88,9 @@ class VanillaVAE(ABCVAE):
         :return: (Tensor) List of latent codes
         """
         result = self.encoder(input)
-        print("result size", result.size())
+        logger.info("result size", result.size())
         result = torch.flatten(result, start_dim=1)
-        print("result size",result.size())
+        logger.info("result size",result.size())
         # Split the result into mu and var components
         # of the latent Gaussian distribution
         mu = self.fc_mu(result)
@@ -180,7 +183,7 @@ def test_encode():
     vVAE = VanillaVAE(32, 1024)
     input = torch.randn(20, 32, 64, 64)
     result = vVAE(input)
-    print(result[0].size())
+    logger.info(result[0].size())
 
 if __name__ == "__main__":
     test_encode()

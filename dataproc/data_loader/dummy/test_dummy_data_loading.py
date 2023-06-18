@@ -49,23 +49,23 @@ class DataLoaderHelper:
         sampler = BatchSampler(dist_sampler, batch_size=batch_size, drop_last=True)
         dataloader = DataLoader(dataset, collate_fn=self.dummy_collate_fn, batch_sampler=sampler)
         return dataloader
-
-def test():
-    helper = DataLoaderHelper()
-    dataloader = helper.get_dataloader(20)
-    iter_dataloader = iter(dataloader)
-    print(len(dataloader))
-    for _ in range(len(dataloader)):
-        data = next(iter_dataloader)
-        print(data["idx"])
-
-    print("----------------------")
-    iter_dataloader = iter(dataloader)
-    for _ in range(len(dataloader)):
-        data = next(iter_dataloader)
-        print(data["idx"])
-
-if __name__ == "__main__":
-    test()
+#
+# def test():
+#     helper = DataLoaderHelper()
+#     dataloader = helper.get_dataloader(20)
+#     iter_dataloader = iter(dataloader)
+#     print(len(dataloader))
+#     for _ in range(len(dataloader)):
+#         data = next(iter_dataloader)
+#         print(data["idx"])
+#
+#     print("----------------------")
+#     iter_dataloader = iter(dataloader)
+#     for _ in range(len(dataloader)):
+#         data = next(iter_dataloader)
+#         print(data["idx"])
+#
+# if __name__ == "__main__":
+#     test()
 
 

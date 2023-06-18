@@ -1,26 +1,28 @@
 from task.ABC_task import ABCTask
 from abc import *
+from log_module.ml_logger import MLLogger
+logger = MLLogger.get_logger()
 
 class ABCTestTask(ABCTask):
     def __init__(self,device, config):
         super().__init__(device, config)
-        print("init InferenceTask")
+        logger.info("init InferenceTask")
 
     @abstractmethod
     def get_num_iterations(self):
-        print("get_num_iterations")
+        logger.info("get_num_iterations")
 
     @abstractmethod
     def job_before_iterations(self, params_dict):
-        print("job_after_epochs")
+        logger.info("job_after_epochs")
 
     @abstractmethod
     def job_after_iterations(self, params_dict):
-        print("job_after_iterations")
+        logger.info("job_after_iterations")
 
     @abstractmethod
     def job_for_each_iteration(self, params_dict):
-        print("job_for_each_iteration")
+        logger.info("job_for_each_iteration")
 
     def start_inference(self):
         params_dict = dict()

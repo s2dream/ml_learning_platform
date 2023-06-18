@@ -1,12 +1,15 @@
 import logging
 import os
 
-# logging.basicConfig(filename='app.log', format=log_format, level=logging.DEBUG)
-# logging.info('This message will go to the log file.')
-
-
-
 class MLLogger:
+    obj_logger = None
+
+    @classmethod
+    def get_logger(cls):
+        if cls.obj_logger == None:
+            cls.obj_logger = MLLogger()
+        return cls.obj_logger
+
     def __init__(self, logger_level = logging.DEBUG):
         self.log_formatter = logging.Formatter("[%(asctime)s][%(levelname)s]: %(message)s")
         self.logger = logging.getLogger("ML_LOGGER")
@@ -42,5 +45,5 @@ class MLLogger:
     def critical(self, msg):
         self.logger.critical(msg)
 
-logger = MLLogger()
+logger = MLLogger.get_logger()
 logger.info("this is the message for logging")

@@ -6,16 +6,18 @@ import os
 from task.task_factory import TaskFactory
 from utility.parse_arguments import ParseArgs
 
+from log_module.ml_logger import MLLogger
+
 CPU = "cpu"
 GPU = "cuda"
-
+logger = MLLogger.get_logger()
 
 class Main:
     def __init__(self):
         self.args = ParseArgs.parse_arguments()
         self.task_name = self.args.task
-        print(str(torch.cuda.device(0)))
-        print(str(torch.cuda.device_count()))
+        logger.info(str(torch.cuda.device(0)))
+        logger.info(str(torch.cuda.device_count()))
         if torch.cuda.is_available():
             world_size = torch.cuda.device_count()
             if self.args.dist and world_size > 1:
