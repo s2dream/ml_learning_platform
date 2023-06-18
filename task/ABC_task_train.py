@@ -3,7 +3,7 @@ from abc import *
 import torch
 
 
-class TrainTask(ABCTask):
+class ABCTrainTask(ABCTask):
 
     def __init__(self, device, config, dist=False, num_replica=1, rank=0, args=None):
         print("device",str(device))

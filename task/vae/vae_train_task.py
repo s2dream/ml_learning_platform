@@ -1,7 +1,7 @@
-from task.ABC_task_train import TrainTask
+from task.ABC_task_train import ABCTrainTask
 
 
-class VAETrainTask(TrainTask):
+class VAETrainTask(ABCTrainTask):
 
     def __init__(self):
         pass
