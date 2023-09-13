@@ -2,10 +2,10 @@
 skeleton codes for learning ml models
 
 
-##Example Instruction
+## Example Instruction
 - Dummy Execution: python main.py --task dummy_train --model dummy_classifier --optimizer adamw --dataloader dummy
 
-##How to add a module
+## How to add a module
 1. configuration, dataproc/data_loader, model, task의 하위에 module 이름의 directory를 생성한다.
 2. 각각에 해당하는 pytorch 기반 모듈을 구현한다.
 3. ./argument_description.json 파일에 모듈명을 key로, module file path를 value롤 각각 항목에 추가한다. key는 main.py 실행 시 argument name으로 받아서 동적으로 instantiation 후에 연결함. 
