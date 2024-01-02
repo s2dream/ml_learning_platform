@@ -90,9 +90,13 @@ class DummyTrainTask(ABCTrainTask):
                                                                 epochs=num_epoch,
                                                                 anneal_strategy='linear')
 
+    def set_dataloader_epoch(self):
+        self.dataset_loader.set_epoch()
+
     def job_after_epochs_loops(self, params_dict):
         self.end_time = time.time()
         logger.info("total elapsed time:{0}".format(self.end_time-self.start_time))
+        self.save_total_ckpt()
 
     def job_before_iterations(self, params_dict):
         # print("job_before_iterations")

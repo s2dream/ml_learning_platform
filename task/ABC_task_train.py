@@ -33,6 +33,7 @@ class ABCTrainTask(ABCTask):
     @abstractmethod
     def job_before_epochs_loops(self, params_dict):
         logger.info("job_before_epochs")
+        return params_dict
 
     @abstractmethod
     def job_after_epochs_loops(self, params_dict):
@@ -41,18 +42,25 @@ class ABCTrainTask(ABCTask):
     @abstractmethod
     def job_before_iterations(self, params_dict):
         logger.info("job_before_iterations")
+        return params_dict
 
     @abstractmethod
-    def job_after_iterations(self, params_dict):
+    def job_after_iterations(self, params_dict, epoch):
         logger.info("job_after_iterations")
+        return params_dict
 
     @abstractmethod
     def job_for_each_iteration(self, params_dict, cur_iter_in_an_epoch, cur_epoch):
         logger.info("job_for_each_iteration")
+        return params_dict
 
     @abstractmethod
     def check_termination(self):
         logger.info("check_terminate")
+
+    @abstractmethod
+    def set_dataloader_epoch(self):
+        pass
 
     def start_train(self):
         num_epoch = self.get_num_epochs()
@@ -61,31 +69,36 @@ class ABCTrainTask(ABCTask):
         params_dict = dict()
         params_dict = self.job_before_epochs_loops(params_dict)
         for epoch in range(num_epoch):
+            if self.dist:
+                self.set_dataloader_epoch()
             num_iterations_in_epoch = self.get_num_iterations()
             params_dict = self.job_before_iterations(params_dict)
             for cur_iter, iteration in enumerate(range(num_iterations_in_epoch)):
                 params_dict = self.job_for_each_iteration(params_dict, cur_iter, epoch)
                 if self.check_termination():
                     break
-            params_dict = self.job_after_iterations(params_dict)
+            params_dict = self.job_after_iterations(params_dict, epoch)
         self.job_after_epochs_loops(params_dict)
         return params_dict
+
 
     def start_task(self):
         self.start_train()
 
-    def save_total_ckpt(self, model, opt, cur_epoch, cur_iter, save_path):
+    def save_total_ckpt(self, model, opt, cur_epoch, cur_iter, save_path, addtional_params=None):
         params = dict()
         params["model"] = model.state_dict()
         params["optimizer"] = opt.state_dict()
         params["epoch"] = cur_epoch
         params["iteration"] = cur_iter
+        if addtional_params != None:
+            params.update(addtional_params)
         torch.save(params, save_path)
 
     def load_total_ckpt(self, model, opt, load_path):
         params = torch.load(load_path)
-        model.load_state_dict(params["model"])
-        opt.load_state_dict(params["optimizer"])
+        self.model.load_state_dict(params["model"])
+        self.opt.load_state_dict(params["optimizer"])
         epoch = params["epoch"]
         iteration = params
         return epoch, iteration
